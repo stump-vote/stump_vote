@@ -1,0 +1,5 @@
+# IDE's
+stump.sublime-workspace
+
+# Localhost DB
+backend/stump_backend/db.sqlite3
