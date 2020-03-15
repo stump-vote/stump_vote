@@ -22,11 +22,13 @@ $ pipenv sync --dev
 $ pipenv shell
 $ cd stump_backend
 $ python manage.py migrate
+$ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
 ### Sample and testing API endpoints
 
+- <http://localhost:8000/admin/>
 - <http://localhost:8000/api/v0/samples/>
 - <http://localhost:8000/api/v0/somedata/>
 - <http://localhost:8000/api/v0/candidates/>
