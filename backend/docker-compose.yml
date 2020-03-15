@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  api:
+    build: ./api
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./api:/usr/src/api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./api/.env.dev
+  postgres:
+    image: postgres:10.12-alpine
+    volumes:
+      - stump_dev_postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=stump_dev
+      - POSTGRES_PASSWORD=stump_dev
+      - POSTGRES_DB=stump_dev
+
+volumes:
+  stump_dev_postgres:
