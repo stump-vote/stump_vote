@@ -17,13 +17,21 @@ voter-empowerment platform. [Sign up](https://stump.vote/) to try the prototype.
 On localhost:
 
 ```bash
-$ cd backend
+$ cd backend/api
 $ pipenv sync --dev
 $ pipenv shell
 $ cd stump_backend
 $ python manage.py migrate
 $ python manage.py createsuperuser
 $ python manage.py runserver
+```
+
+With docker-compose:
+```bash
+$ cd backend
+$ docker-compose up --build -d
+$ docker-compose exec api python manage.py migrate
+$ docker-compose exec api python manage.py createsuperuser
 ```
 
 ### Sample and testing API endpoints
