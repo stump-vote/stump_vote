@@ -58,6 +58,15 @@ The following environment variables should be set using the command line or usin
     - POSTGRES_PASSWORD : user's password
     - POSTGRES_DB : name of the application database
 
+### Running in production mode
+
+```bash
+$ cd backend
+$ docker-compose -f docker-compose.prod.yml up -d --build
+$ docker-compose -f docker-compose.prod.yml exec api python manage.py migrate --noinput
+$ docker-compose -f docker-compose.prod.yml exec api python manage.py collectstatic --no-input --clear
+```
+
 ## Maintainers
 | Name | Role | Contact |
 | ---  | --- | --- |
