@@ -11,6 +11,8 @@ voter-empowerment platform. [Sign up](https://stump.vote/) to try the prototype.
 - Python 3.6 or higher
 - pipenv
 - PostgreSQL 10 and SQLite3
+OR
+- Docker
 
 ### Quickstart
 
@@ -27,6 +29,19 @@ $ python manage.py runserver
 ```
 
 With docker-compose:
+1. Copy and paste the following environment variables into ```backend/api/.env.dev```:
+```bash
+DEBUG=1
+SECRET_KEY=stump_dev
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+DB_USER=stump_dev
+DB_PASSWORD=stump_dev
+DB_NAME=stump_dev
+DB_HOST=postgres
+DB_PORT=5432
+DATABASE=postgres
+```
+2. In terminal, navigate to project root, then do
 ```bash
 $ cd backend
 $ docker-compose up --build -d
