@@ -29,11 +29,12 @@ RUN pip install --upgrade pip \
 
 FROM python:3.6.10-alpine
 
-ENV HOME=/home/stump_api
-ENV APP_HOME=/home/stump_api/web
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
 
 RUN mkdir -p $HOME \
   && mkdir -p $APP_HOME \
+  && mkdir $APP_HOME/staticfiles \
   && mkdir /wheels \
   && addgroup -S stump_api \
   && adduser -S stump_api -G stump_api

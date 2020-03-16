@@ -20,6 +20,9 @@ RUN pip install --upgrade pip \
 # copy Django source code
 COPY . .
 
+# must run manage.py runserver from top level python module
 WORKDIR stump_backend
 
 EXPOSE 8000
+
+ENTRYPOINT ["/usr/src/stump_backend/api/stump_backend/entrypoint.sh"]
