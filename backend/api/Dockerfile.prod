@@ -1,0 +1,59 @@
+FROM python:3.6.10-alpine as base
+
+WORKDIR /usr/src/stump_backend/api
+
+# psycopg2 dependencies
+RUN apk update \
+  && apk add postgresql-dev gcc python3-dev musl-dev
+
+# lint
+# RUN pip install --upgrade pip
+# RUN pip install flake8
+# COPY . /usr/src
+# RUN flake8 --ignore=E501,F401 .
+
+# TODO: run tests
+
+# install python dependencies
+COPY ./Pipfile .
+RUN pip install --upgrade pip \
+  && pip install pipenv \
+  && pipenv lock -r > ./requirements.txt \
+  && pip install -r requirements.txt \
+  && mkdir /wheels \
+  && pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt
+
+#########
+# FINAL #
+#########
+
+FROM python:3.6.10-alpine
+
+ENV HOME=/home/stump_api
+ENV APP_HOME=/home/stump_api/web
+
+RUN mkdir -p $HOME \
+  && mkdir -p $APP_HOME \
+  && mkdir /wheels \
+  && addgroup -S stump_api \
+  && adduser -S stump_api -G stump_api
+
+WORKDIR $APP_HOME
+
+# install python dependencies from wheels
+RUN apk update && apk add libpq
+COPY --from=base /wheels /wheels
+COPY --from=base /usr/src/stump_backend/api/requirements.txt $APP_HOME
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+COPY . $APP_HOME
+
+# change to non root user to avoid exposing root privileges on host
+RUN chown -R stump_api:stump_api $APP_HOME
+USER stump_api
+
+# must run gunicorn from top level python module
+WORKDIR stump_backend
+
+EXPOSE 8000
