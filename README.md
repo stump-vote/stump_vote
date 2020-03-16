@@ -42,6 +42,22 @@ $ docker-compose exec api python manage.py createsuperuser
 - <http://localhost:8000/api/v0/candidates/>
 
 ## Deployment
+### Environment Variables
+The following environment variables should be set using the command line or using .env files:
+  - Django app (```backend/api/.env.prod```):
+    - DEBUG : set to 1 to run django server in debug mode and 0 otherwise (see Django docs for [DEBUG](https://docs.djangoproject.com/en/3.0/ref/settings/#debug))
+    - SECRET_KEY : secret key for Django app (see [SECRET_KEY](https://docs.djangoproject.com/en/3.0/ref/settings/#secret-key))
+    - DJANGO_ALLOWED_HOSTS : hosts that Django is allowed to serve (see [ALLOWED_HOSTS](https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts))
+    - DB_USER (see Django docs for [DATABASES](https://docs.djangoproject.com/en/3.0/ref/settings/#databases))
+    - DB_PASSWORD (see Django docs for [DATABASES](https://docs.djangoproject.com/en/3.0/ref/settings/#databases))
+    - DB_NAME (see Django docs for [DATABASES](https://docs.djangoproject.com/en/3.0/ref/settings/#databases))
+    - DB_HOST (see Django docs for [DATABASES](https://docs.djangoproject.com/en/3.0/ref/settings/#databases))
+    - DB_PORT (see Django docs for [DATABASES](https://docs.djangoproject.com/en/3.0/ref/settings/#databases))
+  - Postgres (```backend/api/.env.prod.db```):
+    - POSTGRES_USER : name of database user
+    - POSTGRES_PASSWORD : user's password
+    - POSTGRES_DB : name of the application database
+
 ## Maintainers
 | Name | Role | Contact |
 | ---  | --- | --- |
