@@ -13,9 +13,7 @@ RUN apk update \
 COPY ./Pipfile .
 RUN pip install --upgrade pip \
   && pip install pipenv \
-  && pipenv lock -r > ./requirements.txt \
-  && pipenv lock -r --dev >> ./requirements.txt \
-  && pip install -r requirements.txt
+  && pipenv install --system --deploy --dev --skip-lock
 
 # copy Django source code
 COPY . .
