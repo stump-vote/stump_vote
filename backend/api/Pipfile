@@ -12,5 +12,6 @@ django-cors-headers = "*"
 gunicorn = "==20.0.4"
 psycopg2 = "==2.8.4"
 
+
 [requires]
 python_version = "3.6"

@@ -10,10 +10,10 @@ RUN apk update \
   && apk add postgresql-dev gcc python3-dev musl-dev
 
 # install python dependencies
-COPY ./Pipfile .
+COPY ./Pipfile* ./
 RUN pip install --upgrade pip \
   && pip install pipenv \
-  && pipenv install --system --deploy --dev --skip-lock
+  && pipenv install --system --dev --deploy
 
 # copy Django source code
 COPY . .
