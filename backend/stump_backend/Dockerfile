@@ -1,6 +1,6 @@
 FROM python:3.6.10-alpine
 
-WORKDIR /usr/src/stump_backend/api
+WORKDIR /usr/src/backend/stump_backend
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -19,8 +19,9 @@ RUN pip install --upgrade pip \
 COPY . .
 
 # must run manage.py runserver from top level python module
+# /usr/src/backend/stump_backend/stump_backend
 WORKDIR stump_backend
 
 EXPOSE 8000
 
-ENTRYPOINT ["/usr/src/stump_backend/api/stump_backend/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/stump_backend/stump_backend/entrypoint.sh"]

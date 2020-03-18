@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  api:
+  stump_backend:
     build:
-      context: ./api
+      context: ./stump_backend
       dockerfile: Dockerfile.prod
     command: gunicorn stump_backend.wsgi:application --bind 0.0.0.0:8000
     volumes:
@@ -11,7 +11,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./api/.env.prod
+      - ./stump_backend/.env.prod
     depends_on:
       - postgres
 
@@ -20,7 +20,7 @@ services:
     volumes:
       - stump_prod_postgres:/var/lib/postgresql/data
     env_file:
-      - ./api/.env.prod.db
+      - ./stump_backend/.env.prod.db
 
   nginx:
     build: ./nginx
@@ -29,7 +29,7 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - api
+      - stump_backend
 
 volumes:
   stump_prod_postgres:

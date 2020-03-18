@@ -2,7 +2,7 @@
 stump.sublime-workspace
 
 # Localhost DB
-backend/api/stump_backend/db.sqlite3
+backend/stump_backend/stump_backend/db.sqlite3
 
 # Secrets
-backend/api/.env*
+backend/stump_backend/.env*

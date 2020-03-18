@@ -2,14 +2,14 @@ version: '3.7'
 
 services:
   api:
-    build: ./api/
+    build: ./stump_backend/
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./api:/usr/src/api
+      - ./stump_backend:/usr/src/stump_backend
     ports:
       - "8000:8000"
     env_file:
-      - ./api/.env.dev
+      - ./stump_backend/.env.dev
   postgres:
     image: postgres:10.12-alpine
     volumes:
