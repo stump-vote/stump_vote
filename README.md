@@ -44,9 +44,9 @@ DATABASE=postgres
 2. In terminal, navigate to project root, then do
 ```bash
 $ cd backend
-$ docker-compose up --build -d
-$ docker-compose exec api python manage.py migrate
-$ docker-compose exec api python manage.py createsuperuser
+$ docker-compose -f docker-compose.local.yml up --build -d
+$ docker-compose -f docker-compose.local.yml exec api python manage.py migrate
+$ docker-compose -f docker-compose.local.yml exec api python manage.py createsuperuser
 ```
 
 ### Sample and testing API endpoints

@@ -2,7 +2,9 @@ version: '3.7'
 
 services:
   api:
-    build: ./stump_backend/
+    build:
+      context: ./stump_backend/
+      dockerfile: Dockerfile.local
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./stump_backend:/usr/src/stump_backend

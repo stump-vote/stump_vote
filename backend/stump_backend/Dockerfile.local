@@ -1,3 +1,8 @@
+#
+# Dockerfile for local development builds only. Not meant for builds that will be
+# deployed to a server. Use Dockerfile.prod for those instead.
+#
+
 FROM python:3.6.10-alpine
 
 WORKDIR /usr/src/backend/stump_backend
