@@ -20,12 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o9psc#nslk4el%ejw(6tg08jrzwk@p#ay*32qb_kgp3(ok6qc1'
+# will crash if environment variable SECRET_KEY not specified
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# for development, set an environment variable DEBUG=1
+DEBUG = bool(os.environ.get('DEBUG', 0))
 
-ALLOWED_HOSTS = []
+# will crash if environment variable DJANGO_ALLOWED_HOSTS not specified
+ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split(' ')
 
 
 # Application definition
@@ -81,8 +84,12 @@ WSGI_APPLICATION = 'stump_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'stump_dev'),
+        'USER': os.environ.get('DB_USER', 'stump_dev'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'stump_dev'),
+        'HOST': os.environ.get('DB_HOST', 'postgres'),
+        'PORT': os.environ.get('DB_PORT', '5432')
     }
 }
 
@@ -123,7 +130,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR,
+                           os.path.pardir,
+                           "staticfiles")
 
 # Localhost React server
 CORS_ORIGIN_WHITELIST = (
