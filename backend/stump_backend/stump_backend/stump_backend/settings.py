@@ -28,7 +28,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = bool(os.environ.get('DEBUG', 0))
 
 # will crash if environment variable DJANGO_ALLOWED_HOSTS not specified
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split(' ')
+ALLOWED_HOSTS = [] if not os.environ.get('DJANGO_ALLOWED_HOSTS', None) else os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -89,7 +89,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USER', 'stump_dev'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'stump_dev'),
         'HOST': os.environ.get('DB_HOST', 'postgres'),
-        'PORT': os.environ.get('DB_PORT', '5432')
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 

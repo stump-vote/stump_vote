@@ -65,6 +65,12 @@ $ make stump_backend.createsuperuser
 - <http://localhost:8000/api/v0/somedata/>
 - <http://localhost:8000/api/v0/candidates/>
 
+### Unit testing
+
+```bash
+$ python manage.py test --settings stump_backend.test_settings
+```
+
 ## Deployment
 ### Environment Variables
 The following environment variables should be set using the command line or using .env files:
