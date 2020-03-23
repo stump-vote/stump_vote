@@ -17,10 +17,10 @@ jobs:
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - restore_cache:
-          key: deps10-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps10-{{ .Branch }}-{{ checksum "backend/stump_backend/Pipfile.lock" }}
       - run:
           command: |
-            cd backend/stump_vote
+            cd backend/stump_backend
             sudo pip install pipenv
             pipenv install
       - save_cache:
