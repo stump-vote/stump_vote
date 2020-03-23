@@ -32,7 +32,7 @@ jobs:
       - run:
           command: |
             cd backend/stump_backend/stump_backend
-            pipenv run python manage.py test
+            pipenv run python manage.py test --settings stump_backend.test_setting
       - store_test_results:
           path: test-results
       - store_artifacts:
