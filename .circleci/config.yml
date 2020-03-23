@@ -24,14 +24,14 @@ jobs:
             sudo pip install pipenv
             pipenv install
       - save_cache:
-          key: deps10-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps10-{{ .Branch }}-{{ checksum "backend/stump_backend/Pipfile.lock" }}
           paths:
             - '.venv'
             - '/usr/local/bin'
             - '/usr/local/lib/python3.6/site-packages'
       - run:
           command: |
-            cd stump_backend
+            cd backend/stump_backend
             pipenv run python manage.py test
       - store_test_results:
           path: test-results
