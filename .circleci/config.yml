@@ -31,7 +31,7 @@ jobs:
             - '/usr/local/lib/python3.6/site-packages'
       - run:
           command: |
-            cd backend/stump_backend
+            cd backend/stump_backend/stump_backend
             pipenv run python manage.py test
       - store_test_results:
           path: test-results
