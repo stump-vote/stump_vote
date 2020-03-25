@@ -1,0 +1,40 @@
+# Based upon https://github.com/CircleCI-Public/circleci-demo-python-django/blob/master/.circleci/config.yml
+version: 2
+jobs:
+  build:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/python:3.6.4
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+      - image: circleci/postgres:9.6.2
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - restore_cache:
+          key: deps10-{{ .Branch }}-{{ checksum "backend/stump_backend/Pipfile.lock" }}
+      - run:
+          command: |
+            cd backend/stump_backend
+            sudo pip install pipenv
+            pipenv install
+      - save_cache:
+          key: deps10-{{ .Branch }}-{{ checksum "backend/stump_backend/Pipfile.lock" }}
+          paths:
+            - '.venv'
+            - '/usr/local/bin'
+            - '/usr/local/lib/python3.6/site-packages'
+      - run:
+          command: |
+            cd backend/stump_backend/stump_backend
+            pipenv run python manage.py test --settings stump_backend.test_settings
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: tr1
