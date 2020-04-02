@@ -22,18 +22,34 @@ For Heroku to work correctly, these files and changes are needed:
 
 ## Create new Heroku app
 
-Run these commands in the same directory as the Procfile and runtime.txt.
+First, create a Django secret key:
+```
+$ python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'
+```
+
+Run these commands in the root git directory.
+
 
 ```
-$ heroku create stump-vote
+$ heroku create stump-vote  (note: do this in the root git directory)
+$ heroku config:set SECRET_KEY=<secret>
+$ heroku config:set DJANGO_ALLOWED_HOSTS=stump-vote.herokuapp.com
 $ git remote -v
-$ git push origin master
-$ heroku run python manage.py migrate
-$ heroku run python manage.py createsuperuser
+$ git subtree push --prefix backend/stump_backend heroku master
+$ heroku run python stump_backend/manage.py migrate
+$ heroku run python stump_backend/manage.py createsuperuser
 $ heroku ps:scale web=1
 ```
 
 Deploys to: https://stump-vote.herokuapp.com/
+
+Note: will need to set, which are found in the Heroku Datastores:
+- DATABASE_URL
+- DB_HOST
+- DB_NAME
+- DB_PASSWORD
+- DB_PORT
+- DB_USER
 
 ## Use existing Heroku app already deployed
 
