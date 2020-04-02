@@ -1,1 +1,1 @@
-web: gunicorn stump_backend.wsgi --log-file -
+web: gunicorn stump_backend.wsgi --chdir stump_backend --log-file -
