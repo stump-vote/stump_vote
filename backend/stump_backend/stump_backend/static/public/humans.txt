@@ -1,0 +1,12 @@
+/* TEAM */
+    Project Lead: Brian Hedden
+
+    Frontend Developer: Zack Rose
+
+    Frontend Developer: Henry Lai
+
+    Backend Developer: Wes Galbraith
+
+    Backend Developer: Carlos Perez
+    Twitter: @runtimecolorado
+    From: Colorado Springs, Colorado, US

@@ -9,6 +9,11 @@ verify_ssl = true
 django = "==3.0.4"
 djangorestframework = "*"
 django-cors-headers = "*"
+gunicorn = "==20.0.4"
+psycopg2 = "==2.8.4"
+django-nose = "*"
+coverage = "*"
+whitenoise = {extras = ["brotli"],version = "*"}
 
 [requires]
 python_version = "3.6"

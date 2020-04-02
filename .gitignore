@@ -2,4 +2,14 @@
 stump.sublime-workspace
 
 # Localhost DB
-backend/stump_backend/db.sqlite3
+backend/stump_backend/stump_backend/db.sqlite3
+
+# Secrets
+backend/stump_backend/.env*
+
+# Python unit test coverage report
+backend/stump_backend/stump_backend/.coverage
+backend/stump_backend/stump_backend/cover
+
+# Static files
+backend/stump_backend/staticfiles

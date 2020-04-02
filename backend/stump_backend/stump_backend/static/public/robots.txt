@@ -1,0 +1,6 @@
+
+User-agent: Googlebot
+Allow: /
+Disallow: /*?*err_code=404
+Disallow: /search
+Disallow: /search/?*
