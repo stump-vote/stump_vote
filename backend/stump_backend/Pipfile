@@ -13,6 +13,7 @@ gunicorn = "==20.0.4"
 psycopg2 = "==2.8.4"
 django-nose = "*"
 coverage = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.6"
