@@ -1,5 +1,6 @@
 # from django.shortcuts import render
 import datetime
+import pytz
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 # from rest_framework import generics
@@ -30,6 +31,8 @@ class SomeDataView(APIView):
         """
         data = {
             'status': 'ok',
+            'date_denver': datetime.datetime.now(pytz.timezone('America/Denver')),
+            'date_utc': datetime.datetime.now(pytz.utc),
             'somelist': ['foo', 'bar', 'baz', 42]
         }
         return Response(data)
