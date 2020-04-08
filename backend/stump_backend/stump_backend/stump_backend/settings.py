@@ -139,6 +139,7 @@ STATIC_ROOT = os.path.join(BASE_DIR,
 # Localhost React server
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+    'http://localhost:5000',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS

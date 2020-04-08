@@ -8,5 +8,6 @@ router_v0.register(r'candidates', views.BoulderCandidatesViewSet, 'candidate')
 
 urlpatterns = [
     path('v0/', include(router_v0.urls)),
-    path('v0/somedata/', views.SomeDataView.as_view(), name='somedata')
+    path('v0/somedata/', views.SomeDataView.as_view(), name='somedata'),
+    path('v0/frontend/', views.ZackDataView.as_view(), name='frontend'),
 ]

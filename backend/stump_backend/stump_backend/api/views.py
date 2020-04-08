@@ -1,6 +1,9 @@
 # from django.shortcuts import render
 import datetime
 import pytz
+import json
+import os.path as op
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 # from rest_framework import generics
@@ -36,6 +39,17 @@ class SomeDataView(APIView):
             'somelist': ['foo', 'bar', 'baz', 42]
         }
         return Response(data)
+
+
+class ZackDataView(APIView):
+    '''
+    For Zack's frontend-demo
+    '''
+    def get(self, request, format=None):
+        json_path = op.join(op.dirname(op.abspath(__file__)), 'sample_data', 'frontend_demo.json')
+        with open(json_path, "r") as fp:
+            data = json.load(fp)
+            return Response(data)
 
 
 class BoulderCandidatesViewSet(viewsets.ViewSet):
