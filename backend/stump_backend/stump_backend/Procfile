@@ -1,1 +1,0 @@
-web: gunicorn stump_backend.wsgi --log-file -
