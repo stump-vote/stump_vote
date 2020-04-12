@@ -63,6 +63,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'static', 'stump-vote-frontend-demo'),  # TODO: take out the side-loaded demo
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
@@ -151,5 +152,6 @@ STATICFILES_DIRS = (
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_ROOT = os.path.join(BASE_DIR, "static", "public")
+# WHITENOISE_ROOT = os.path.join(BASE_DIR, "static", "public")
+WHITENOISE_ROOT = os.path.join(BASE_DIR, "static", "stump-vote-frontend-demo")
 WHITENOISE_MAX_AGE = 60  # http://whitenoise.evans.io/en/stable/django.html#WHITENOISE_MAX_AGE

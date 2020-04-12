@@ -1,0 +1,28 @@
+{
+  "name": "stump_backend",
+  "version": "1.0.0",
+  "description": "Build script for the Stump Vote backend",
+  "main": "index.js",
+  "scripts": {
+    "heroku-postbuild": "gulp --gulpfile ./gulpfile.js --env.production --progress --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stump-vote/stump_vote.git"
+  },
+  "author": "Carlos Perez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stump-vote/stump_vote/issues"
+  },
+  "homepage": "https://github.com/stump-vote/stump_vote#readme",
+  "dependencies": {},
+  "engines": {
+    "node": "13.12.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.656.0",
+    "gulp": "^4.0.2",
+    "mkpath": "^1.0.0"
+  }
+}
