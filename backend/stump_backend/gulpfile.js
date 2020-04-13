@@ -39,7 +39,7 @@ function displayCredentials() {
 function writeFile(filePath, dataBody, bucketKey) {
     var dirname = path.dirname(filePath);
     // This makes nested directory structure, e.g., path/to/subdir1/subdir2
-    mkpath(dirname, function (err) {
+    mkpath(dirname, function(err) {
         if (err) throw err;
         // console.log("Directory structure '" + dirname + "' created");
         // Next, write the file to the file system

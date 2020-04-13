@@ -4,12 +4,12 @@ import pytz
 import json
 import os.path as op
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.response import Response
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer
-from .models import Sample
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer
+from .models import Sample, NewsfeedDemoItem
 
 
 # Create your views here.
@@ -50,6 +50,14 @@ class ZackDataView(APIView):
         with open(json_path, "r") as fp:
             data = json.load(fp)
             return Response(data)
+
+
+class NewsfeedDemoItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    A sample model that is exposed using the REST API.
+    """
+    serializer_class = NewsfeedDemoItemSerializer
+    queryset = NewsfeedDemoItem.objects.all()
 
 
 class BoulderCandidatesViewSet(viewsets.ViewSet):
