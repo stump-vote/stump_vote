@@ -14,14 +14,14 @@ class SampleSerializer(serializers.ModelSerializer):
 
 class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
     topic = serializers.SerializerMethodField()
-    type = serializers.CharField(source='item_type')
+    _type = serializers.CharField(source='item_type')  # field same as built-in Python class and will be stripped out below
     image = serializers.URLField(source='main_image')
     bill = serializers.SerializerMethodField()
     date = serializers.DateTimeField(source='pub_date', default_timezone=pytz.timezone('America/Denver'))
 
     class Meta:
         model = NewsfeedDemoItem
-        fields = ('id', 'type', 'topic', 'date', 'feed_key', 'content', 'image', 'bill')
+        fields = ('id', '_type', 'topic', 'date', 'feed_key', 'content', 'image', 'bill')
 
     def get_topic(self, obj):
         if obj.topic is not None:
@@ -33,7 +33,7 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         '''
-        Removes null fields from response
+        Removes null fields from response, and strip out leading underscores in key name
         '''
         result = super().to_representation(instance)
-        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
+        return OrderedDict([(key.lstrip('_'), result[key]) for key in result if result[key] is not None])
