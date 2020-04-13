@@ -13,7 +13,7 @@ class SampleSerializer(serializers.ModelSerializer):
 
 
 class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
-    topic = serializers.StringRelatedField(many=False)
+    topic = serializers.SerializerMethodField()
     type = serializers.CharField(source='item_type')
     image = serializers.URLField(source='main_image')
     bill = serializers.SerializerMethodField()
@@ -22,6 +22,10 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsfeedDemoItem
         fields = ('id', 'type', 'topic', 'date', 'feed_key', 'content', 'image', 'bill')
+
+    def get_topic(self, obj):
+        if obj.topic is not None:
+            return dict(id=obj.topic.id, name=obj.topic.name)
 
     def get_bill(self, obj):
         if obj.bill is not None:
