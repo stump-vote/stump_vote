@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'knox',
     'api',
 ]
 
@@ -155,3 +156,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # WHITENOISE_ROOT = os.path.join(BASE_DIR, "static", "public")
 WHITENOISE_ROOT = os.path.join(BASE_DIR, "static", "stump-vote-frontend-demo")
 WHITENOISE_MAX_AGE = 60  # http://whitenoise.evans.io/en/stable/django.html#WHITENOISE_MAX_AGE
+
+# REST framework setup
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': [  # remove
+    #     'rest_framework.permissions.AllowAny'
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (  # added
+        'knox.auth.TokenAuthentication',
+    ),
+    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+}

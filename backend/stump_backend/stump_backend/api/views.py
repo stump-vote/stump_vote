@@ -6,6 +6,7 @@ import os.path as op
 
 from rest_framework import viewsets, status, mixins
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 # from rest_framework import generics
 from rest_framework.views import APIView
 from .serializers import SampleSerializer, NewsfeedDemoItemSerializer
@@ -28,6 +29,8 @@ class SomeDataView(APIView):
     Just some random data.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         """
         Return a list of random data
@@ -45,6 +48,7 @@ class ZackDataView(APIView):
     '''
     For Zack's frontend-demo
     '''
+
     def get(self, request, format=None):
         json_path = op.join(op.dirname(op.abspath(__file__)), 'sample_data', 'frontend_demo.json')
         with open(json_path, "r") as fp:

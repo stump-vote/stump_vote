@@ -14,6 +14,7 @@ psycopg2 = "==2.8.4"
 django-nose = "*"
 coverage = "*"
 whitenoise = {extras = ["brotli"],version = "*"}
+django-rest-knox = "*"
 
 [requires]
 python_version = "3.6"
