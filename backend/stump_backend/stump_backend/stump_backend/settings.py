@@ -165,5 +165,5 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (  # added
         'knox.auth.TokenAuthentication',
     ),
-    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+    # 'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
 }

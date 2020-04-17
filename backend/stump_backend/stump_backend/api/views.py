@@ -4,12 +4,17 @@ import pytz
 import json
 import os.path as op
 
-from rest_framework import viewsets, status, mixins
+from django.contrib.auth import login
+
+from rest_framework import viewsets, status, mixins, generics
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from knox.views import LoginView as KnoxLoginView
+
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer, NewsfeedDemoItemSerializer
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer
 from .models import Sample, NewsfeedDemoItem
 
 
@@ -86,3 +91,24 @@ class BoulderCandidatesViewSet(viewsets.ViewSet):
         if candidate is None:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         return Response(candidate)
+
+
+class UserAPIView(generics.RetrieveAPIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class LoginView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginView, self).post(request, format=None)

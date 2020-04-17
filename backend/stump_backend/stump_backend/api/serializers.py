@@ -1,5 +1,8 @@
 import pytz
 
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 from collections import OrderedDict
 
@@ -37,3 +40,11 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
         '''
         result = super().to_representation(instance)
         return OrderedDict([(key.lstrip('_'), result[key]) for key in result if result[key] is not None])
+
+
+# User and authenication serializers
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser')
