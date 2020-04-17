@@ -75,9 +75,10 @@ The deployment is therefore a two step process:
 
 ### Prerequisites
 
-Using your Amazon S3 credentials, logon to the AWS console and create an S3 bucket called `stump-vote-frontend-demo`
+Using your Amazon S3 credentials, logon to the AWS console and create an S3 bucket called `stump-vote-frontend-demo`.
+Note that this bucket does not need any public access permissions; the default locked down permissions are fine.
 
-Also create an IAM user with credentials with read access the bucket.
+Also create an IAM user with credentials with read access to the bucket.
 
 ### Build React app
 
@@ -87,7 +88,7 @@ Build and upload the build statics to S3:
 
 ```
 $ cd frontend-demo
-$ npm build
+$ npm run build
 $ cd build
 $ aws s3 sync . s3://stump-vote-frontend-demo/ --delete
 ```
@@ -111,7 +112,7 @@ $ heroku config:set AWS_ACCESS_KEY_ID=<access key>
 $ heroku config:set AWS_SECRET_ACCESS_KEY=<secret key>
 ```
 
-Review `gulpfile.js` and `package.json` and the step "heroku-postbuild"
+Review `gulpfile.js` and `package.json` and the step "heroku-postbuild".
 
 ### Deployment
 
