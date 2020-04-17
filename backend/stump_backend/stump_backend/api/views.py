@@ -1,12 +1,21 @@
 # from django.shortcuts import render
 import datetime
 import pytz
-from rest_framework import viewsets, status
+import json
+import os.path as op
+
+from django.contrib.auth import login
+
+from rest_framework import viewsets, status, mixins, generics
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from knox.views import LoginView as KnoxLoginView
+
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer
-from .models import Sample
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer
+from .models import Sample, NewsfeedDemoItem
 
 
 # Create your views here.
@@ -25,6 +34,8 @@ class SomeDataView(APIView):
     Just some random data.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         """
         Return a list of random data
@@ -36,6 +47,26 @@ class SomeDataView(APIView):
             'somelist': ['foo', 'bar', 'baz', 42]
         }
         return Response(data)
+
+
+class ZackDataView(APIView):
+    '''
+    For Zack's frontend-demo
+    '''
+
+    def get(self, request, format=None):
+        json_path = op.join(op.dirname(op.abspath(__file__)), 'sample_data', 'frontend_demo.json')
+        with open(json_path, "r") as fp:
+            data = json.load(fp)
+            return Response(data)
+
+
+class NewsfeedDemoItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    A sample model that is exposed using the REST API.
+    """
+    serializer_class = NewsfeedDemoItemSerializer
+    queryset = NewsfeedDemoItem.objects.all()
 
 
 class BoulderCandidatesViewSet(viewsets.ViewSet):
@@ -60,3 +91,24 @@ class BoulderCandidatesViewSet(viewsets.ViewSet):
         if candidate is None:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         return Response(candidate)
+
+
+class UserAPIView(generics.RetrieveAPIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class LoginView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginView, self).post(request, format=None)
