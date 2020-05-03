@@ -5,16 +5,18 @@ import json
 import os.path as op
 
 from django.contrib.auth import login
+from django.http import Http404
 
 from rest_framework import viewsets, status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.generics import RetrieveUpdateAPIView
 from knox.views import LoginView as KnoxLoginView
 
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, GeoLocationSerializer
 from .models import Sample, NewsfeedDemoItem
 
 
@@ -112,3 +114,55 @@ class LoginView(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginView, self).post(request, format=None)
+
+
+class GeoLocationAPIView(RetrieveUpdateAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = GeoLocationSerializer
+
+    MY_LOCATION_SESSION_KEY = 'my_location'
+
+    def _get_object_from_session(self):
+        session = self.request.session
+        if self.MY_LOCATION_SESSION_KEY in session:
+            my_location = session[self.MY_LOCATION_SESSION_KEY]
+            return my_location
+        else:
+            return None
+
+    def _set_object_from_session(self, my_location):
+        self.request.session[self.MY_LOCATION_SESSION_KEY] = my_location
+        return
+
+    def get_object(self):
+        my_location = self._get_object_from_session()
+        return my_location
+
+    def retrieve(self, request, *args, **kwargs):
+        # GET
+        instance = self.get_object()
+        if instance is None:
+            raise Http404
+        serializer = GeoLocationSerializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        # PUT
+        serializer = GeoLocationSerializer(data=request.data)
+        if serializer.is_valid():
+            new_instance = serializer.save()
+            self._set_object_from_session(new_instance)
+            return Response(new_instance)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        # PATCH
+        instance = self.get_object()
+        serializer = GeoLocationSerializer(instance=instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            new_instance = serializer.save()
+            self._set_object_from_session(new_instance)
+            return Response(new_instance)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

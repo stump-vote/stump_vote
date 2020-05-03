@@ -1,4 +1,5 @@
 import pytz
+import random
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -48,3 +49,48 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser')
+
+
+class GeoLocationSerializer(serializers.Serializer):
+    address = serializers.CharField()
+    latitude = serializers.FloatField(read_only=True)
+    longitude = serializers.FloatField(read_only=True)
+
+    def _geolocate_address(self, address):
+        '''
+        Mock up lat / lon somewhere in North America
+        '''
+        latitude = random.randrange(26000, 48900)
+        longitude = random.randrange(-124000, -72000)
+        return latitude / 1000.0, longitude / 1000.0
+
+    def validate_address(self, value):
+        '''
+        Address validation includes looking up the lat / lon
+        '''
+        address = value.strip()
+        if address == '':
+            # DJF checks for this already, but...
+            raise serializers.ValidationError('Address cannot be empty')
+        return address
+
+    def create(self, validated_data):
+        '''
+        Create new instance based on validated data. Note that if address validates, we have
+        a valid lat / lon too
+        '''
+        address = validated_data.get('address')
+        latitude, longitude = self._geolocate_address(address)
+        return dict(address=address, latitude=latitude, longitude=longitude)
+
+    def update(self, instance, validated_data):
+        '''
+        Updates the instance with validated data, but there is nothing to do since create does this for us
+        '''
+        new_address = validated_data.get('address')
+        if not new_address == instance['address']:
+            # Address changed
+            return self.create(validated_data)
+        else:
+            # Address did not change
+            return instance
