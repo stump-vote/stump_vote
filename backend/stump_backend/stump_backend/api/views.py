@@ -117,6 +117,10 @@ class LoginView(KnoxLoginView):
 
 
 class GeoLocationAPIView(RetrieveUpdateAPIView):
+    '''
+    API for address lookup to lat/lon
+    '''
+
     permission_classes = (AllowAny, )
     serializer_class = GeoLocationSerializer
 
@@ -139,7 +143,8 @@ class GeoLocationAPIView(RetrieveUpdateAPIView):
         return my_location
 
     def retrieve(self, request, *args, **kwargs):
-        # GET
+        # GET address, latitude, and longitude, if set in the session
+
         instance = self.get_object()
         if instance is None:
             raise Http404
@@ -147,7 +152,7 @@ class GeoLocationAPIView(RetrieveUpdateAPIView):
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        # PUT
+        # PUT address, latitude and longitude are read-only fields and not changed by the user
         serializer = GeoLocationSerializer(data=request.data)
         if serializer.is_valid():
             new_instance = serializer.save()
@@ -157,7 +162,7 @@ class GeoLocationAPIView(RetrieveUpdateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, *args, **kwargs):
-        # PATCH
+        # PATCH address, update if it changed by the caller
         instance = self.get_object()
         serializer = GeoLocationSerializer(instance=instance, data=request.data, partial=True)
         if serializer.is_valid():
