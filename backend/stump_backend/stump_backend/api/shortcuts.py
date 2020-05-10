@@ -7,8 +7,7 @@ def get_current_location(request):
         return (None, None)
 
     if request.user is not None and request.user.is_authenticated:
-        # TODO: lookup user's location from the registered user profile
-        return (39.9, -104.7)
+        return (request.user.latitude, request.user.longitude)
 
     if request.session is not None and 'my_location' in request.session:
         my_location = request.session['my_location']

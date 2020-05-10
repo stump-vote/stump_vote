@@ -2,7 +2,7 @@ import pytz
 import random
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from stump_auth.models import StumpUser
 
 from rest_framework import serializers
 from collections import OrderedDict
@@ -47,7 +47,7 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = StumpUser
         fields = ('id', 'username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser')
 
 

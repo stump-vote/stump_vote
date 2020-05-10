@@ -18,6 +18,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework.views import APIView
 from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, GeoLocationSerializer
 from .models import Sample, NewsfeedDemoItem
+from .shortcuts import get_current_location
 
 
 # Create your views here.
@@ -139,8 +140,11 @@ class GeoLocationAPIView(RetrieveUpdateAPIView):
         return
 
     def get_object(self):
-        my_location = self._get_object_from_session()
-        return my_location
+        if (self.request.user.is_authenticated):
+            return(dict(address=self.request.user.address, latitude=self.request.user.latitude, longitude=self.request.user.longitude))
+        else:
+            my_location = self._get_object_from_session()
+            return my_location
 
     def retrieve(self, request, *args, **kwargs):
         # GET address, latitude, and longitude, if set in the session

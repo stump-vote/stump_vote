@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'api',
+    'stump_auth',
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,6 @@ REST_FRAMEWORK = {
     ),
     # 'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
 }
+
+# Authentication setup
+AUTH_USER_MODEL = 'stump_auth.StumpUser'
