@@ -107,20 +107,17 @@ class UserAPIView(generics.RetrieveAPIView):
         return self.request.user
 
 
-class RegisterAPIView(generics.GenericAPIView):
+class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        try:
-            user = serializer.save()
-            return Response({
-                "user": UserSerializer(user, context=self.get_serializer_context()).data,
-                "token": AuthToken.objects.create(user)[1]
-            }, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({'error': "{} {}".format(type(e).__name__, str(e))}, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "token": AuthToken.objects.create(user)[1]
+        })
 
 
 class LoginView(KnoxLoginView):

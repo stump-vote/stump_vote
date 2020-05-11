@@ -1,7 +1,10 @@
 import pytz
 import random
+import re
 
 from django.contrib.auth import authenticate
+from django.utils.translation import ugettext_lazy as _
+
 from stump_auth.models import StumpUser
 
 from rest_framework import serializers
@@ -52,6 +55,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    zip_code = serializers.RegexField(r'^\d{5}(?:-\d{4})?$', **dict(error_messages={'invalid': _('Enter a zip code in the format XXXXX or XXXXX-XXXX.')}))
+
     class Meta:
         model = StumpUser
         # Note: only pass in email, which will become the username too
@@ -94,7 +99,7 @@ class GeoLocationSerializer(serializers.Serializer):
         address = value.strip()
         if address == '':
             # DJF checks for this already, but...
-            raise serializers.ValidationError('Address cannot be empty')
+            raise serializers.ValidationError(_('Address cannot be empty'))
         return address
 
     def create(self, validated_data):
