@@ -13,12 +13,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.generics import RetrieveUpdateAPIView
 from knox.views import LoginView as KnoxLoginView
+from knox.models import AuthToken
 
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, GeoLocationSerializer
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, RegisterSerializer, GeoLocationSerializer
 from .models import Sample, NewsfeedDemoItem
-from .shortcuts import get_current_location
+# from .shortcuts import get_current_location
 
 
 # Create your views here.
@@ -104,6 +105,22 @@ class UserAPIView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class RegisterAPIView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user = serializer.save()
+            return Response({
+                "user": UserSerializer(user, context=self.get_serializer_context()).data,
+                "token": AuthToken.objects.create(user)[1]
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': "{} {}".format(type(e).__name__, str(e))}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(KnoxLoginView):

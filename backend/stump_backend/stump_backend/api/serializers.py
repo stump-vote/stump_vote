@@ -51,6 +51,29 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser')
 
 
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StumpUser
+        # Note: only pass in email, which will become the username too
+        fields = ('id', 'email', 'first_name', 'last_name', 'address', 'city', 'state', 'zip_code', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = StumpUser.objects.create_user(
+            validated_data['email'],  # username
+            validated_data['email'],
+            validated_data['password'],
+            **dict(first_name=validated_data.get('first_name', ''),
+                   last_name=validated_data.get('last_name', ''),
+                   address=validated_data.get('address'),
+                   city=validated_data.get('city'),
+                   state=validated_data.get('state'),
+                   zip_code=validated_data.get('zip_code'),
+                   )
+        )
+        return user
+
+
 class GeoLocationSerializer(serializers.Serializer):
     address = serializers.CharField()
     latitude = serializers.FloatField(read_only=True)

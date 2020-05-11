@@ -9,8 +9,8 @@ from localflavor.us.models import USStateField, USZipCodeField
 
 class StumpUserManager(UserManager):
 
-    def create_user(self, username, email, password=None):
-        return super(StumpUserManager).create_user(username, email, password)
+    def create_user(self, username, email, password=None, **extra_fields):
+        return super().create_user(username, email, password, **extra_fields)
 
 
 class StumpUser(AbstractUser):
