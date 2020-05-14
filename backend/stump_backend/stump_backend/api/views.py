@@ -11,7 +11,6 @@ from rest_framework import viewsets, status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.generics import RetrieveUpdateAPIView
 from knox.views import LoginView as KnoxLoginView
 from knox.models import AuthToken
 
@@ -97,7 +96,7 @@ class BoulderCandidatesViewSet(viewsets.ViewSet):
         return Response(candidate)
 
 
-class UserAPIView(generics.RetrieveAPIView):
+class UserAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -106,11 +105,35 @@ class UserAPIView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+    # def retreive() -- use superclass
+
+    def update(self, request, *args, **kwargs):
+        # PUT
+        instance = self.get_object()
+        print(instance)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        # PATCH
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
+        # POST
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -124,14 +147,15 @@ class LoginView(KnoxLoginView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
+        # POST
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return super(LoginView, self).post(request, format=None)
+        return super().post(request, format=None)
 
 
-class GeoLocationAPIView(RetrieveUpdateAPIView):
+class GeoLocationAPIView(generics.RetrieveUpdateAPIView):
     '''
     API for address lookup to lat/lon
     '''

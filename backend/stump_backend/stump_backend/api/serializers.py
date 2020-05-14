@@ -48,25 +48,51 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
 
 # User and authenication serializers
 
-class UserSerializer(serializers.ModelSerializer):
+class StumpUserModelSerializer(serializers.ModelSerializer):
+    zip_code = serializers.RegexField(r'^\d{5}(?:-\d{4})?$', **dict(error_messages={'invalid': _('Enter a zip code in the format XXXXX or XXXXX-XXXX.')}))
+    common_fields = ['id', 'email', 'last_name', 'first_name', 'address', 'city', 'state', 'zip_code', 'latitude', 'longitude']
+
+
+class UserSerializer(StumpUserModelSerializer):
+    # zip_code = serializers.RegexField(r'^\d{5}(?:-\d{4})?$', **dict(error_messages={'invalid': _('Enter a zip code in the format XXXXX or XXXXX-XXXX.')}))
+
     class Meta:
         model = StumpUser
-        fields = ('id', 'username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser')
+        fields = StumpUserModelSerializer.common_fields + ['is_staff', 'is_superuser']
+        read_only_fields = ['id', 'is_staff', 'is_superuser', 'latitude', 'longitude']
+
+    def update(self, instance, validated_data):
+        '''
+        Updates selected fields on the user model
+        '''
+        print('update')
+        assert isinstance(instance, StumpUser), "Update requires instance of StumpUser"
+        print(instance)
+        print(validated_data)
+        updated = False
+        for field in validated_data.keys():
+            # Only explictly whitelisted fields are allowed to be updated
+            assert field in ['first_name', 'last_name', 'address', 'city', 'state', 'zip_code'], "Update field sanity check, do not update: '{}'".format(field)
+            if hasattr(instance, field):
+                setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+                updated = True
+        if updated:
+            instance.save()
+        return instance
 
 
-class RegisterSerializer(serializers.ModelSerializer):
-    zip_code = serializers.RegexField(r'^\d{5}(?:-\d{4})?$', **dict(error_messages={'invalid': _('Enter a zip code in the format XXXXX or XXXXX-XXXX.')}))
+class RegisterSerializer(StumpUserModelSerializer):
 
     class Meta:
         model = StumpUser
         # Note: only pass in email, which will become the username too
-        fields = ('id', 'email', 'first_name', 'last_name', 'address', 'city', 'state', 'zip_code', 'password')
+        fields = StumpUserModelSerializer.common_fields + ['password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = StumpUser.objects.create_user(
-            validated_data['email'],  # username
-            validated_data['email'],
+            validated_data['email'],  # username field
+            validated_data['email'],  # email field
             validated_data['password'],
             **dict(first_name=validated_data.get('first_name', ''),
                    last_name=validated_data.get('last_name', ''),
