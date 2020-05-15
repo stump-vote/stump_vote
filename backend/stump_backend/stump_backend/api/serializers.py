@@ -1,8 +1,9 @@
 import pytz
 import random
-import re
 
-from django.contrib.auth import authenticate
+# from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 
 from stump_auth.models import StumpUser
@@ -65,16 +66,15 @@ class UserSerializer(StumpUserModelSerializer):
         '''
         Updates selected fields on the user model
         '''
-        print('update')
         assert isinstance(instance, StumpUser), "Update requires instance of StumpUser"
-        print(instance)
-        print(validated_data)
         updated = False
         for field in validated_data.keys():
             # Only explictly whitelisted fields are allowed to be updated
-            assert field in ['first_name', 'last_name', 'address', 'city', 'state', 'zip_code'], "Update field sanity check, do not update: '{}'".format(field)
+            assert field in ['email', 'first_name', 'last_name', 'address', 'city', 'state', 'zip_code'], "Update field sanity check, do not update: '{}'".format(field)
             if hasattr(instance, field):
                 setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+                if field == 'email':
+                    instance.username = validated_data.get('email', getattr(instance, 'username'))
                 updated = True
         if updated:
             instance.save()
@@ -103,6 +103,41 @@ class RegisterSerializer(StumpUserModelSerializer):
                    )
         )
         return user
+
+
+class PasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField(max_length=128)  # Matches database length
+
+    class Meta:
+        fields = ['new_password', 'old_password']
+        extra_kwargs = {'new_password': {'write_only': True}, 'old_password': {'write_only': True}}
+
+    def validate_new_password(self, value):
+        assert isinstance(self.instance, StumpUser), "Update requires instance of StumpUser"
+        # Complexity requirement
+        validate_password(value, user=self.instance)
+        return value
+
+    def validate_old_password(self, value):
+        assert isinstance(self.instance, StumpUser), "Update requires instance of StumpUser"
+        if not check_password(value, self.instance.password):
+            raise serializers.ValidationError(_("Incorrect old password"))
+        return value
+
+    def create(self, validated_data):
+        assert isinstance(self.instance, StumpUser), "Update requires instance of StumpUser"
+        old_password = validated_data.get('old_password')
+        new_password = validated_data.get('new_password')
+        return dict(old_password=old_password, new_password=new_password)
+
+    def update(self, instance, validated_data):
+        assert isinstance(instance, StumpUser), "Update requires instance of StumpUser"
+        old_password = validated_data.get('old_password')
+        new_password = validated_data.get('new_password')
+        instance.set_password(new_password)
+        instance.save()
+        return dict(old_password=old_password, new_password=new_password)
 
 
 class GeoLocationSerializer(serializers.Serializer):

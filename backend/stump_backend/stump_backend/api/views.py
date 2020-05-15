@@ -4,6 +4,7 @@ import pytz
 import json
 import os.path as op
 
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import login
 from django.http import Http404
 
@@ -16,7 +17,7 @@ from knox.models import AuthToken
 
 # from rest_framework import generics
 from rest_framework.views import APIView
-from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, RegisterSerializer, GeoLocationSerializer
+from .serializers import SampleSerializer, NewsfeedDemoItemSerializer, UserSerializer, RegisterSerializer, GeoLocationSerializer, PasswordSerializer
 from .models import Sample, NewsfeedDemoItem
 # from .shortcuts import get_current_location
 
@@ -110,8 +111,7 @@ class UserAPIView(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         # PUT
         instance = self.get_object()
-        print(instance)
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(instance=instance, data=request.data, partial=False)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -153,6 +153,32 @@ class LoginView(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super().post(request, format=None)
+
+
+class ChangeUserPasswordAPIView(generics.UpdateAPIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = PasswordSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        # PUT
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(dict(email=instance.email, message=_("Password changed")))
+
+    def partial_update(self, request, *args, **kwargs):
+        # PATCH
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=request.data, partial_update=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(dict(email=instance.email, message=_("Password changed")))
 
 
 class GeoLocationAPIView(generics.RetrieveUpdateAPIView):
