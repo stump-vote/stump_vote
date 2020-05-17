@@ -19,6 +19,7 @@ coverage = "*"
 whitenoise = {extras = ["brotli"],version = "*"}
 django-rest-knox = "*"
 django-localflavor = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.6"

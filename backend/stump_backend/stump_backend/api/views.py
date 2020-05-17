@@ -139,12 +139,24 @@ class RegisterAPIView(generics.CreateAPIView):
         user = serializer.save()
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": AuthToken.objects.create(user)[1]
+            "token": AuthToken.objects.create(user)[1],
         })
 
 
 class LoginView(KnoxLoginView):
     permission_classes = (AllowAny,)
+
+    def get_post_response_data(self, request, token, instance):
+        data = {
+            'expiry': self.format_expiry_datetime(instance.expiry),
+            'token': token
+        }
+        data["user"] = UserSerializer(
+            request.user,
+            context=self.get_context()
+        ).data
+
+        return data
 
     def post(self, request, *args, **kwargs):
         # POST

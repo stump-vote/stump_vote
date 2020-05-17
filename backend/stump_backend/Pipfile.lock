@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7c4b9d628031be8c741ba9d43567f9a75b7fe7af2392c75c3ec89190be9b41b3"
+            "sha256": "f82f6a030f26676ca9d0f3f0075750a4af4d6a5152874200a5c86d39480c856e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -203,6 +203,13 @@
             ],
             "index": "pypi",
             "version": "==3.11.0"
+        },
+        "djangorestframework-camel-case": {
+            "hashes": [
+                "sha256:9eba4a2f959e1e46b7d0f6136baf950552b2a4a695d4bb3cfb0c37be25294574"
+            ],
+            "index": "pypi",
+            "version": "==1.1.2"
         },
         "gunicorn": {
             "hashes": [
@@ -609,10 +616,10 @@
         },
         "qtconsole": {
             "hashes": [
-                "sha256:8f5ae5571f0e921db9f2d12613ed667c350ee22c7db598d9bbbe143e8533f932",
-                "sha256:e7882df6e95ec710b5893ec3a7ebfd54e410e63d801e4bbf8c785d74758c2329"
+                "sha256:89442727940126c65c2f94a058f1b4693a0f5d4c4b192fd6518ba3b11f4791aa",
+                "sha256:fd48bf1051d6e69cec1f9e2596cfaa94e3c726c70c5d848681ebce10c029f5fd"
             ],
-            "version": "==4.7.3"
+            "version": "==4.7.4"
         },
         "qtpy": {
             "hashes": [
