@@ -18,8 +18,8 @@ class StumpUserAdmin(UserAdmin):
     )
 
     fieldsets = UserAdmin.fieldsets + (
-        (_('Voter location'), {
-            'fields': ('address', 'city', 'state', 'zip_code', 'latitude', 'longitude')
+        (_('Voter information'), {
+            'fields': ('language', 'address', 'city', 'state', 'zip_code', 'latitude', 'longitude')
         }),
     )
 

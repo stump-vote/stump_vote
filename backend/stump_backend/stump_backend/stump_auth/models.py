@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from localflavor.us.us_states import STATE_CHOICES
 from localflavor.us.models import USStateField, USZipCodeField
@@ -33,7 +34,10 @@ class StumpUser(AbstractUser):
 
     objects = StumpUserManager()
 
-    # Stump voter location fields
+    # Stump voter specific fields
+    language = models.CharField(max_length=10,
+                                choices=settings.LANGUAGES,
+                                default=settings.LANGUAGE_CODE)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     state = USStateField(choices=STATE_CHOICES)

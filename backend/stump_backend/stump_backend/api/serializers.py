@@ -5,6 +5,7 @@ import random
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from stump_auth.models import StumpUser
 
@@ -51,7 +52,7 @@ class NewsfeedDemoItemSerializer(serializers.ModelSerializer):
 
 class StumpUserModelSerializer(serializers.ModelSerializer):
     zip_code = serializers.RegexField(r'^\d{5}(?:-\d{4})?$', **dict(error_messages={'invalid': _('Enter a zip code in the format XXXXX or XXXXX-XXXX.')}))
-    common_fields = ['id', 'email', 'last_name', 'first_name', 'address', 'city', 'state', 'zip_code', 'latitude', 'longitude']
+    common_fields = ['id', 'email', 'language', 'last_name', 'first_name', 'address', 'city', 'state', 'zip_code', 'latitude', 'longitude']
 
 
 class UserSerializer(StumpUserModelSerializer):
@@ -70,7 +71,7 @@ class UserSerializer(StumpUserModelSerializer):
         updated = False
         for field in validated_data.keys():
             # Only explictly whitelisted fields are allowed to be updated
-            assert field in ['email', 'first_name', 'last_name', 'address', 'city', 'state', 'zip_code'], "Update field sanity check, do not update: '{}'".format(field)
+            assert field in ['email', 'language', 'first_name', 'last_name', 'address', 'city', 'state', 'zip_code'], "Update field sanity check, do not update: '{}'".format(field)
             if hasattr(instance, field):
                 setattr(instance, field, validated_data.get(field, getattr(instance, field)))
                 if field == 'email':
@@ -94,7 +95,8 @@ class RegisterSerializer(StumpUserModelSerializer):
             validated_data['email'],  # username field
             validated_data['email'],  # email field
             validated_data['password'],
-            **dict(first_name=validated_data.get('first_name', ''),
+            **dict(language=validated_data.get('language', settings.LANGUAGE_CODE),
+                   first_name=validated_data.get('first_name', ''),
                    last_name=validated_data.get('last_name', ''),
                    address=validated_data.get('address'),
                    city=validated_data.get('city'),
