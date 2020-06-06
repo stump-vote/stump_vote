@@ -66,6 +66,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            # When this is included in DIRS, the React demo is shown instead of the Django index.html template
             os.path.join(BASE_DIR, 'static', 'stump-vote-frontend-demo'),  # TODO: take out the side-loaded demo
             os.path.join(BASE_DIR, 'templates'),
         ],
