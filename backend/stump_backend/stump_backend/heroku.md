@@ -63,6 +63,67 @@ Run gunicorn via Profile locally on port 5000:
 $ heroku local
 ```
 
+## Using the frontend demo side-loader
+
+Prior to the monorepo, whereby both the frontend and backend are in an integrated repo, the frontend React app
+is built separately from the Heroku deployment. The process of deploying the frontend uses a *side-loader*
+that copies the React static build from Amazon S3 to the Heroku dyno.
+
+The deployment is therefore a two step process:
+1) Build the React app and copy the files to S3
+2) Deploy the backend app which kicks off a gulp task to fetch the app and copy it to a Django-accessible static directory.
+
+### Prerequisites
+
+Using your Amazon S3 credentials, logon to the AWS console and create an S3 bucket called `stump-vote-frontend-demo`.
+Note that this bucket does not need any public access permissions; the default locked down permissions are fine.
+
+Also create an IAM user with credentials with read access to the bucket.
+
+### Build React app
+
+You will need the aws-cli tools installed to run `aws` from the command line.
+
+Build and upload the build statics to S3:
+
+```
+$ cd frontend-demo
+$ npm run build
+$ cd build
+$ aws s3 sync . s3://stump-vote-frontend-demo/ --delete
+```
+
+### Deploy the React and Django app to Heroku
+
+#### Heroku setup
+
+Heroko needs the nodejs Heroku build pack.
+
+```
+$ heroku buildpacks
+=== stump-vote Buildpack URLs
+1. heroku/nodejs
+2. heroku/python
+```
+
+And the S3 keys from the AWS IAM console:
+```
+$ heroku config:set AWS_ACCESS_KEY_ID=<access key>
+$ heroku config:set AWS_SECRET_ACCESS_KEY=<secret key>
+```
+
+Review `gulpfile.js` and `package.json` and the step "heroku-postbuild".
+
+### Deployment
+
+After copying up the React app to S3, deploy the backend to Heroku. To deploy a branch other than master, starting
+from the root of the project.
+
+```
+$ cd stump_vote
+$ git push heroku `git subtree split --prefix backend/stump_backend react_proto1`:master
+```
+
 ## Status
 
 ```
