@@ -4,6 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+django-extensions = "*"
+ipython = "*"
+jupyter = "*"
 
 [packages]
 django = "==3.0.7"
@@ -15,6 +18,9 @@ django-nose = "*"
 coverage = "*"
 whitenoise = {extras = ["brotli"],version = "*"}
 django-rest-knox = "*"
+requests = "*"
+django-localflavor = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.6"
