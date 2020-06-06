@@ -13,7 +13,11 @@ urlpatterns = [
     path('v0/somedata/', views.SomeDataView.as_view(), name='somedata'),
     # path('v0/frontend/', views.ZackDataView.as_view(), name='frontend'),
     path('user/', views.UserAPIView.as_view(), name='user_api_view'),
+    path('changepassword/', views.ChangeUserPasswordAPIView.as_view(), name='change_user_password_api_view'),
+    path('register/', views.RegisterAPIView.as_view(), name='register_api_view'),
     path('login/', views.LoginView.as_view(), name='knox_login'),   # Override
     path('logout/', LogoutView.as_view(), name='knox_logout'),
-    path('logoutall/', LogoutAllView.as_view(), name='knox_logoutall')
+    path('logoutall/', LogoutAllView.as_view(), name='knox_logoutall'),
+    # Location services
+    path('v0/geolocation/', views.GeoLocationAPIView.as_view(), name='location'),
 ]
