@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'api',
+    'stump_auth',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'stump_auth.password_validation.PasswordSameAsOldValidator',
+    },
 ]
 
 
@@ -120,6 +125,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+# This setting is used in the StumpUser model for future growth
+LANGUAGES = (
+    ('en-US', _('English')),
+)
 
 TIME_ZONE = 'UTC'
 
@@ -166,4 +176,20 @@ REST_FRAMEWORK = {
         'knox.auth.TokenAuthentication',
     ),
     # 'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+        # Any other renders
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        # If you use MultiPartFormParser or FormParser, we also have a camel case version
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        # Any other parsers
+    ),
 }
+
+# Authentication setup
+AUTH_USER_MODEL = 'stump_auth.StumpUser'
