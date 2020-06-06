@@ -18,6 +18,7 @@ django-nose = "*"
 coverage = "*"
 whitenoise = {extras = ["brotli"],version = "*"}
 django-rest-knox = "*"
+requests = "*"
 django-localflavor = "*"
 djangorestframework-camel-case = "*"
 
